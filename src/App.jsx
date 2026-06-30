@@ -4,7 +4,7 @@ import './App.css'
 
 const MIN_SIZE = 2
 const MAX_SIZE = 6
-const buyMeCoffeeUrl = 'https://www.buymeacoffee.com/'
+const buyMeCoffeeUrl = 'https://buymeacoffee.com/vctrkarthik'
 
 const tools = [
   {
