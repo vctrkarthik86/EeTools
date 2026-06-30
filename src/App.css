@@ -22,7 +22,8 @@
 }
 
 h1,
-h2 {
+h2,
+h3 {
   margin: 0;
   color: var(--text);
   font-weight: 700;
@@ -78,6 +79,11 @@ h1 {
 h2 {
   font-size: 1.55rem;
   line-height: 1.1;
+}
+
+h3 {
+  font-size: 1.08rem;
+  line-height: 1.2;
 }
 
 .status-pill,
@@ -395,4 +401,185 @@ h2 {
     height: 42px;
   }
 }
+.unit-control {
+  display: grid;
+  gap: 7px;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
 
+.segmented-control {
+  display: inline-flex;
+  gap: 3px;
+  width: max-content;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 3px;
+  background: var(--surface-muted);
+}
+
+.segmented-control button {
+  min-height: 34px;
+  border: 0;
+  border-radius: 5px;
+  padding: 0 11px;
+  color: var(--text-muted);
+  background: transparent;
+  font-weight: 700;
+}
+
+.segmented-control button:hover {
+  color: var(--text);
+  background: rgba(47, 125, 100, 0.1);
+}
+
+.segmented-control button.is-active {
+  color: #ffffff;
+  background: var(--accent);
+}
+
+.complex-layout {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.complex-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.complex-number-panel,
+.complex-operation-panel {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--surface);
+}
+
+.complex-number-header,
+.complex-operation-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.complex-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.complex-field {
+  display: grid;
+  gap: 7px;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.complex-field input {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 12px;
+  color: var(--text);
+  background: var(--surface);
+  font-family: var(--font-mono);
+}
+
+.complex-field input:hover {
+  border-color: rgba(47, 125, 100, 0.55);
+}
+
+.format-output-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.format-output-grid output {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  min-height: 64px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px 12px;
+  background: var(--surface-muted);
+}
+
+.format-output-grid span {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.format-output-grid strong {
+  color: var(--accent-strong);
+  font-family: var(--font-mono);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.operation-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.operation-controls button {
+  min-width: 42px;
+  min-height: 38px;
+  padding: 0 12px;
+  font-family: var(--font-mono);
+  font-weight: 800;
+}
+
+.operation-controls button.is-active {
+  border-color: var(--accent);
+  color: #ffffff;
+  background: var(--accent);
+}
+
+.result-output-grid {
+  margin-top: 14px;
+}
+
+.complex-operation-panel .message {
+  margin-top: 14px;
+}
+
+@media (max-width: 800px) {
+  .complex-inputs,
+  .complex-field-grid,
+  .format-output-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .complex-number-header,
+  .complex-operation-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .segmented-control {
+    width: 100%;
+  }
+
+  .segmented-control button {
+    flex: 1;
+  }
+
+  .operation-controls {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
