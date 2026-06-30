@@ -763,15 +763,19 @@ function App() {
           <p className="author-credit">Created by Victor Karthik</p>
         </div>
         <div className="header-actions">
+          <span className="status-pill">{activeToolMeta.shortName}</span>
           <a
             className="coffee-button"
             href={buyMeCoffeeUrl}
             target="_blank"
             rel="noreferrer"
+            aria-label="Buy me a coffee"
           >
+            <span className="coffee-symbol" aria-hidden="true">
+              ☕
+            </span>
             Buy me a coffee
           </a>
-          <span className="status-pill">{activeToolMeta.shortName}</span>
         </div>
       </header>
 
