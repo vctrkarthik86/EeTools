@@ -150,6 +150,11 @@ h3 {
   align-items: start;
 }
 
+.calculator-stack,
+.calculator-slot {
+  min-width: 0;
+}
+
 .tool-nav,
 .tool-panel {
   border: 1px solid var(--border);
@@ -424,6 +429,276 @@ h3 {
 }
 
 
+.plotter-panel {
+  overflow: hidden;
+}
+
+.plotter-panel .panel-header button {
+  min-height: 38px;
+  padding: 0 14px;
+  font-weight: 700;
+}
+
+.plotter-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+.plotter-controls,
+.plotter-stage {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.plotter-section {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.plotter-section:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.plotter-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.plotter-section-header button {
+  min-height: 34px;
+  padding: 0 12px;
+  font-weight: 700;
+}
+
+.function-list {
+  display: grid;
+  gap: 10px;
+}
+
+.function-row {
+  display: grid;
+  grid-template-columns: 22px 34px minmax(0, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px;
+  background: var(--surface);
+}
+
+.function-enabled {
+  width: 18px;
+  height: 18px;
+  justify-self: center;
+  accent-color: var(--accent);
+}
+
+.function-color {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px;
+  background: var(--surface);
+}
+
+.function-expression {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 10px;
+  color: var(--text);
+  background: var(--surface);
+  font-family: var(--font-mono);
+}
+
+.function-select-button,
+.function-remove-button {
+  min-height: 36px;
+  padding: 0 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.function-select-button[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: #ffffff;
+  background: var(--accent);
+}
+
+.function-remove-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.function-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.example-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.example-buttons button {
+  min-height: 34px;
+  padding: 0 10px;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.plotter-grid-controls,
+.integral-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.plotter-grid-controls label,
+.integral-controls label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.plotter-grid-controls input,
+.plotter-grid-controls select,
+.integral-controls input {
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 10px;
+  color: var(--text);
+  background: var(--surface);
+}
+
+.plotter-grid-controls input,
+.integral-controls input {
+  font-family: var(--font-mono);
+}
+
+.plotter-check {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.plotter-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.plot-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.plot-canvas:active {
+  cursor: grabbing;
+}
+
+.plotter-readout {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.plotter-readout output,
+.roots-panel {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px 12px;
+  background: var(--surface-muted);
+}
+
+.plotter-readout span,
+.roots-panel span {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.plotter-readout strong,
+.roots-panel strong {
+  color: var(--accent-strong);
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1080px) {
+  .plotter-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .plotter-readout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .function-row {
+    grid-template-columns: 22px 34px minmax(0, 1fr);
+  }
+
+  .function-select-button {
+    grid-column: 1 / 3;
+  }
+
+  .function-remove-button {
+    grid-column: 3 / 4;
+  }
+}
+
+@media (max-width: 520px) {
+  .plotter-grid-controls,
+  .integral-controls,
+  .plotter-readout {
+    grid-template-columns: 1fr;
+  }
+
+  .example-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .function-expression {
+    font-size: 0.92rem;
+  }
+}
 .support-callout {
   display: flex;
   align-items: center;
