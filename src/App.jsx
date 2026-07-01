@@ -4,7 +4,15 @@ import './App.css'
 
 const MIN_SIZE = 2
 const MAX_SIZE = 6
-const buyMeCoffeeUrl = 'https://buymeacoffee.com/vctrkarthik'
+const supportDeveloperUrl = 'https://buymeacoffee.com/vctrkarthik'
+const contactEmail = 'vctrkarthik@gmail.com'
+
+const pageTabs = [
+  { id: 'tools', label: 'Tools' },
+  { id: 'about', label: 'About' },
+  { id: 'privacy', label: 'Privacy' },
+  { id: 'terms', label: 'Terms' },
+]
 
 const tools = [
   {
@@ -281,6 +289,7 @@ function calculateComplexOperation(first, second, operation) {
 }
 
 function App() {
+  const [activePage, setActivePage] = useState('tools')
   const [activeTool, setActiveTool] = useState('matrix-solver')
   const [size, setSize] = useState(3)
   const [matrixA, setMatrixA] = useState(() => createMatrix(3))
@@ -295,6 +304,7 @@ function App() {
     () => tools.find((tool) => tool.id === activeTool) ?? tools[0],
     [activeTool],
   )
+  const activePageMeta = pageTabs.find((page) => page.id === activePage) ?? pageTabs[0]
 
   const parsedComplexNumbers = useMemo(
     () => ({
@@ -754,31 +764,8 @@ function App() {
     )
   }
 
-  return (
-    <main className="app-shell">
-      <header className="app-header">
-        <div>
-          <p className="eyebrow">Electrical Engineering Tools</p>
-          <h1>Calculators</h1>
-          <p className="author-credit">Created by Victor Karthik</p>
-        </div>
-        <div className="header-actions">
-          <span className="status-pill">{activeToolMeta.shortName}</span>
-          <a
-            className="coffee-button"
-            href={buyMeCoffeeUrl}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Buy me a coffee"
-          >
-            <span className="coffee-symbol" aria-hidden="true">
-              ☕
-            </span>
-            Buy me a coffee
-          </a>
-        </div>
-      </header>
-
+  function renderToolsPage() {
+    return (
       <div className="workspace">
         <aside className="tool-nav" aria-label="Tool list">
           {tools.map((tool) => (
@@ -798,12 +785,173 @@ function App() {
 
         {activeTool === 'matrix-solver' ? renderMatrixSolver() : renderComplexNumbers()}
       </div>
+    )
+  }
+
+  function renderAboutPage() {
+    return (
+      <section className="tool-panel info-page" aria-labelledby="about-title">
+        <p className="eyebrow">About</p>
+        <h2 id="about-title">About EE Toolkit</h2>
+        <div className="info-copy">
+          <p>
+            EE Toolkit is a free collection of engineering calculators and learning tools
+            designed for electrical engineering students. It helps students learn and
+            solve engineering problems more efficiently with tools such as matrix solvers
+            and complex number calculators.
+          </p>
+          <p>
+            The toolkit is continuously updated with new features based on student
+            feedback, including planned support for AC circuit analysis, filter design,
+            and other electrical engineering workflows.
+          </p>
+          <p>
+            Contact:{' '}
+            <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  function renderPrivacyPage() {
+    return (
+      <section className="tool-panel info-page" aria-labelledby="privacy-title">
+        <p className="eyebrow">Privacy Policy</p>
+        <h2 id="privacy-title">Privacy Policy</h2>
+        <div className="info-copy">
+          <p>Last updated: July 1, 2026</p>
+          <p>
+            EE Toolkit runs in your browser and does not require an account. Calculator
+            inputs and results are processed locally in the app and are not intentionally
+            collected, stored, or sold by EE Toolkit.
+          </p>
+          <p>
+            If you contact the developer by email, your email address and message are used
+            only to respond to your request. External services linked from this site, such
+            as a developer support platform, may have their own privacy practices.
+          </p>
+          <p>
+            Privacy questions can be sent to{' '}
+            <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  function renderTermsPage() {
+    return (
+      <section className="tool-panel info-page" aria-labelledby="terms-title">
+        <p className="eyebrow">Terms of Service</p>
+        <h2 id="terms-title">Terms of Service</h2>
+        <div className="info-copy">
+          <p>Last updated: July 1, 2026</p>
+          <p>
+            EE Toolkit is provided as a free educational resource. You may use it for
+            learning, study, and problem-solving support.
+          </p>
+          <ul className="info-list">
+            <li>Results should be checked before use in graded, professional, or safety-critical work.</li>
+            <li>The toolkit is provided as-is, without warranties or guarantees of accuracy.</li>
+            <li>Features, calculators, and content may change as the project is updated.</li>
+          </ul>
+          <p>
+            Questions about these terms can be sent to{' '}
+            <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  function renderSupportCallout() {
+    return (
+      <aside className="support-callout" aria-labelledby="support-title">
+        <div>
+          <h2 id="support-title">Enjoying EE Toolkit?</h2>
+          <p>
+            If these tools have helped you with your coursework or projects, you can
+            leave an optional tip to support continued development. Your support helps
+            fund new calculators, bug fixes, and educational features.
+          </p>
+        </div>
+        <a
+          className="tip-button"
+          href={supportDeveloperUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Leave a Tip
+        </a>
+      </aside>
+    )
+  }
+
+  function renderCurrentPage() {
+    if (activePage === 'about') return renderAboutPage()
+    if (activePage === 'privacy') return renderPrivacyPage()
+    if (activePage === 'terms') return renderTermsPage()
+
+    return renderToolsPage()
+  }
+
+  return (
+    <main className="app-shell">
+      <header className="app-header">
+        <div>
+          <p className="eyebrow">Electrical Engineering Toolkit</p>
+          <h1>EE Toolkit</h1>
+          <p className="author-credit">Created by Victor Karthik</p>
+        </div>
+        <div className="header-actions">
+          <span className="status-pill">
+            {activePage === 'tools' ? activeToolMeta.shortName : activePageMeta.label}
+          </span>
+          <a
+            className="support-button"
+            href={supportDeveloperUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Leave a Tip
+          </a>
+        </div>
+      </header>
+
+      <nav className="page-nav" aria-label="Main pages">
+        {pageTabs.map((page) => (
+          <button
+            type="button"
+            key={page.id}
+            className={activePage === page.id ? 'is-active' : ''}
+            aria-current={activePage === page.id ? 'page' : undefined}
+            onClick={() => setActivePage(page.id)}
+          >
+            {page.label}
+          </button>
+        ))}
+      </nav>
+
+      {renderCurrentPage()}
+      {renderSupportCallout()}
 
       <footer className="app-footer">
-        <span>Author: Victor Karthik</span>
-        <a href={buyMeCoffeeUrl} target="_blank" rel="noreferrer">
-          Support this tool
-        </a>
+        <span>
+          Contact:{' '}
+          <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+        </span>
+        <div className="footer-links">
+          <button type="button" onClick={() => setActivePage('privacy')}>
+            Privacy Policy
+          </button>
+          <button type="button" onClick={() => setActivePage('terms')}>
+            Terms of Service
+          </button>
+          <a href={supportDeveloperUrl} target="_blank" rel="noreferrer">
+            Leave a Tip
+          </a>
+        </div>
       </footer>
     </main>
   )

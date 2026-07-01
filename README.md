@@ -1,8 +1,9 @@
-# EE Tools
+# EE Toolkit
 
-Electrical engineering calculators and study tools built with React and Vite.
+EE Toolkit is a free collection of engineering calculators and learning tools for electrical engineering students.
 
 Live site: https://vctrkarthik86.github.io/EeTools/
+Contact: vctrkarthik@gmail.com
 
 ## Development
 
