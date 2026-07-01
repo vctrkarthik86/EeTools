@@ -266,6 +266,11 @@ h3 {
   text-align: center;
 }
 
+.size-control input,
+.complex-field input {
+  font-size: 1rem;
+}
+
 .equation-strip {
   display: flex;
   align-items: center;
@@ -293,6 +298,7 @@ h3 {
   gap: 24px;
   overflow-x: auto;
   padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .matrix-group {
@@ -330,6 +336,7 @@ h3 {
   color: var(--text);
   background: var(--surface);
   font-family: var(--font-mono);
+  font-size: 1rem;
   text-align: center;
 }
 
@@ -413,6 +420,7 @@ h3 {
   color: var(--accent-strong);
   font-family: var(--font-mono);
   font-size: 1.02rem;
+  overflow-wrap: anywhere;
 }
 
 
@@ -535,6 +543,60 @@ h3 {
   .matrix-grid input,
   .vector-grid input {
     height: 42px;
+  }
+}
+
+@media (max-width: 520px) {
+  .app-shell {
+    width: min(100% - 16px, 1180px);
+  }
+
+  .page-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .page-nav button,
+  .support-button,
+  .tip-button,
+  .actions button {
+    min-height: 44px;
+  }
+
+  .status-pill,
+  .support-button {
+    font-size: 0.82rem;
+  }
+
+  .matrix-area {
+    gap: 12px;
+  }
+
+  .matrix-grid,
+  .vector-grid {
+    gap: 6px;
+  }
+
+  .matrix-grid {
+    grid-template-columns: repeat(var(--matrix-size), minmax(52px, 58px));
+  }
+
+  .vector-grid {
+    grid-template-columns: minmax(52px, 58px);
+  }
+
+  .matrix-grid input,
+  .vector-grid input {
+    height: 44px;
+  }
+
+  .vector-group {
+    padding-left: 8px;
+  }
+
+  .solution-list output {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 .unit-control {
