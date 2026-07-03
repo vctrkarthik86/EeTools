@@ -21,4 +21,9 @@ export const tools = [
     name: 'Function Plotter',
     shortName: 'f(x)',
   },
+  {
+    id: 'bit-manipulation-playground',
+    name: 'Bit Manipulation Playground',
+    shortName: 'Bits',
+  },
 ]

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import BitManipulationPlayground from './calculators/BitManipulationPlayground'
 import ComplexNumbers from './calculators/ComplexNumbers'
 import FunctionPlotter from './calculators/FunctionPlotter'
 import MatrixSolver from './calculators/MatrixSolver'
@@ -12,6 +13,7 @@ const calculatorComponents = {
   'matrix-solver': MatrixSolver,
   'complex-numbers': ComplexNumbers,
   'function-plotter': FunctionPlotter,
+  'bit-manipulation-playground': BitManipulationPlayground,
 }
 
 function App() {
@@ -155,7 +157,7 @@ function App() {
           target="_blank"
           rel="noreferrer"
         >
-          Leave a Tip
+          Support this project
         </a>
       </aside>
     )
@@ -190,7 +192,7 @@ function App() {
             target="_blank"
             rel="noreferrer"
           >
-            Leave a Tip
+            Support this project
           </a>
         </div>
       </header>
@@ -225,7 +227,7 @@ function App() {
             Terms of Service
           </button>
           <a href={supportDeveloperUrl} target="_blank" rel="noreferrer">
-            Leave a Tip
+            Support this project
           </a>
         </div>
       </footer>
