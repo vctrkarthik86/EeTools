@@ -26,4 +26,9 @@ export const tools = [
     name: 'Bit Manipulation Playground',
     shortName: 'Bits',
   },
+  {
+    id: 'number-representation-converter',
+    name: 'Number Representation Converter',
+    shortName: 'Base',
+  },
 ]

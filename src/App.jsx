@@ -3,6 +3,7 @@ import BitManipulationPlayground from './calculators/BitManipulationPlayground'
 import ComplexNumbers from './calculators/ComplexNumbers'
 import FunctionPlotter from './calculators/FunctionPlotter'
 import MatrixSolver from './calculators/MatrixSolver'
+import NumberRepresentationConverter from './calculators/NumberRepresentationConverter'
 import { pageTabs, tools } from './data/tools'
 import './App.css'
 
@@ -14,6 +15,7 @@ const calculatorComponents = {
   'complex-numbers': ComplexNumbers,
   'function-plotter': FunctionPlotter,
   'bit-manipulation-playground': BitManipulationPlayground,
+  'number-representation-converter': NumberRepresentationConverter,
 }
 
 function App() {

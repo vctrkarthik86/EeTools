@@ -1334,3 +1334,117 @@ h3 {
     min-height: 44px;
   }
 }
+
+.representation-panel {
+  overflow: hidden;
+}
+
+.representation-simple-flow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.representation-choice-card,
+.representation-range-card,
+.representation-value-card,
+.representation-result-card {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--surface);
+}
+
+.representation-choice-card > span,
+.representation-range-card > span,
+.representation-result-card output span {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.representation-format-card,
+.representation-value-card,
+.representation-result-card {
+  grid-column: 1 / -1;
+}
+
+.representation-width-control,
+.representation-base-control {
+  flex-wrap: wrap;
+  width: max-content;
+  max-width: 100%;
+}
+
+.representation-format-control {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+}
+
+.representation-format-control button {
+  min-height: 38px;
+  white-space: normal;
+}
+
+.representation-range-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.representation-result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.representation-range-grid output,
+.representation-result-grid output {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px 12px;
+  background: var(--surface-muted);
+}
+
+.representation-range-grid span,
+.representation-result-grid span {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.representation-range-grid strong,
+.representation-result-grid strong {
+  color: var(--accent-strong);
+  font-family: var(--font-mono);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.representation-result-card {
+  margin-top: 14px;
+}
+
+@media (max-width: 900px) {
+  .representation-simple-flow,
+  .representation-format-control,
+  .representation-range-grid,
+  .representation-result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .representation-width-control,
+  .representation-base-control {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+}
