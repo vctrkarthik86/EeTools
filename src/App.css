@@ -1448,3 +1448,173 @@ h3 {
     width: 100%;
   }
 }
+
+.bit-mode-bar {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  margin-top: 18px;
+}
+
+.bit-operator-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.bit-operator-strip span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 0 9px;
+  color: var(--text-muted);
+  background: var(--surface-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.bit-operator-strip strong {
+  color: var(--accent-strong);
+  font-family: var(--font-mono);
+}
+
+.bit-layout {
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.bit-controls,
+.bit-code-card {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--surface);
+}
+
+.bit-panel .complex-field select {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 12px;
+  color: var(--text);
+  background: var(--surface);
+  font-family: var(--font-mono);
+}
+
+.bit-panel .complex-field select:hover {
+  border-color: rgba(47, 125, 100, 0.55);
+}
+
+.bit-operation-control {
+  margin-top: 2px;
+}
+
+.bit-operation-control .segmented-control,
+.bit-input-grid .segmented-control {
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.bit-operation-control .segmented-control button,
+.bit-input-grid .segmented-control button {
+  flex: 1 1 70px;
+}
+
+.bit-input-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.bit-field-value {
+  grid-column: 1 / -1;
+}
+
+.bit-panel button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.bit-code-card h3 {
+  font-family: var(--font-mono);
+}
+
+.bit-code-card pre {
+  min-height: 106px;
+  margin: 0;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 13px 14px;
+  background: #17211d;
+  color: #eff8f3;
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.bit-code-card code {
+  white-space: pre-wrap;
+}
+
+.bit-code-card.has-error pre {
+  display: none;
+}
+
+.bit-result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.bit-result-grid output {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 9px 10px;
+  background: var(--surface-muted);
+}
+
+.bit-result-grid span {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.bit-result-grid strong {
+  color: var(--accent-strong);
+  font-family: var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.bit-register-card {
+  margin-top: 18px;
+}
+
+@media (max-width: 1080px) {
+  .bit-mode-bar,
+  .bit-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .bit-input-grid,
+  .bit-result-grid,
+  .bit-value-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bit-mode-bar > .segmented-control {
+    width: 100%;
+  }
+}
