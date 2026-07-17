@@ -1618,3 +1618,167 @@ h3 {
     width: 100%;
   }
 }
+
+.vector-panel {
+  overflow: hidden;
+}
+
+
+.vector-reference-panel {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.vector-reference-controls {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.vector-layout {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.vector-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.vector-input-panel,
+.vector-reference-panel,
+.vector-operation-panel,
+.vector-operator-panel {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--surface);
+}
+
+.vector-field-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.vector-view-grid,
+.vector-result-views,
+.vector-symbolic-results {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.vector-result-views,
+.vector-symbolic-results {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.vector-view-grid output,
+.vector-result-views output,
+.vector-scalar-result output,
+.vector-symbolic-results output {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  min-height: 64px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px 12px;
+  background: var(--surface-muted);
+}
+
+.vector-view-grid span,
+.vector-result-views span,
+.vector-scalar-result span,
+.vector-symbolic-results span {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.vector-view-grid strong,
+.vector-result-views strong,
+.vector-scalar-result strong,
+.vector-symbolic-results strong {
+  color: var(--accent-strong);
+  font-family: var(--font-mono);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.vector-operation-controls button {
+  min-width: 62px;
+}
+
+.vector-scalar-result {
+  margin-top: 14px;
+}
+
+.vector-scalar-result output {
+  max-width: 280px;
+}
+
+.vector-operator-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.vector-operator-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.vector-scalar-field {
+  grid-column: 1 / -1;
+}
+
+.vector-operator-grid input {
+  font-family: var(--font-mono);
+}
+
+.vector-symbolic-results {
+  grid-template-columns: 1fr;
+}
+
+.vector-header-actions {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+@media (max-width: 1080px) {
+  .vector-inputs,
+  .vector-view-grid,
+  .vector-result-views {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .vector-reference-panel,
+  .vector-reference-controls,
+  .vector-header-actions,
+  .vector-operator-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+
+  .vector-field-grid,
+  .vector-operator-grid {
+    grid-template-columns: 1fr;
+  }
+}

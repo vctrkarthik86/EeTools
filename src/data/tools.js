@@ -31,4 +31,9 @@ export const tools = [
     name: 'Number Representation Converter',
     shortName: 'Base',
   },
+  {
+    id: 'vector-calculator',
+    name: 'Vector Calculator',
+    shortName: 'Vector',
+  },
 ]
