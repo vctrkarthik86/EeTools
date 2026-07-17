@@ -223,9 +223,9 @@ function formatReadout(value) {
   if (value === null || value === undefined || !Number.isFinite(value)) return '--'
 
   const absValue = Math.abs(value)
-  if (absValue >= 10000 || (absValue > 0 && absValue < 0.001)) return value.toExponential(4)
+  if (absValue >= 10000 || (absValue > 0 && absValue < 0.001)) return value.toExponential(3)
 
-  return Number(value.toFixed(5)).toString()
+  return Number(value.toFixed(3)).toString()
 }
 
 function getSampleX(index, count, view, scaleMode) {

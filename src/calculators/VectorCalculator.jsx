@@ -304,7 +304,7 @@ function getVectorViews(vector, angleUnit) {
       label: 'Cylindrical',
       values: [
         { label: 'rho', value: cylindrical.rho },
-        { label: `phi (${angleUnit})`, value: getAngleInUnit(cylindrical.phi, angleUnit) },
+        { label: 'phi', value: getAngleInUnit(cylindrical.phi, angleUnit), unit: angleUnit },
         { label: 'z', value: cylindrical.z },
       ],
     },
@@ -313,8 +313,8 @@ function getVectorViews(vector, angleUnit) {
       label: 'Spherical',
       values: [
         { label: 'r', value: spherical.r },
-        { label: `theta (${angleUnit})`, value: getAngleInUnit(spherical.theta, angleUnit) },
-        { label: `phi (${angleUnit})`, value: getAngleInUnit(spherical.phi, angleUnit) },
+        { label: 'theta', value: getAngleInUnit(spherical.theta, angleUnit), unit: angleUnit },
+        { label: 'phi', value: getAngleInUnit(spherical.phi, angleUnit), unit: angleUnit },
       ],
     },
   ]
@@ -322,8 +322,41 @@ function getVectorViews(vector, angleUnit) {
 
 function formatCoordinateView(view) {
   return view.values
-    .map((component) => `${component.label} = ${formatScalar(cleanTinyValue(component.value))}`)
+    .map((component) => {
+      const unit = component.unit ? ` ${component.unit}` : ''
+      return `${component.label} = ${formatScalar(cleanTinyValue(component.value))}${unit}`
+    })
     .join(', ')
+}
+
+function formatSymbolicTerm(component, basis) {
+  const simplified = simplify(component).toString()
+  const coefficient = /\s[+-]\s/.test(simplified) ? `(${simplified})` : simplified
+
+  if (simplified === '0') return null
+  if (simplified === '1') return { sign: '+', text: basis }
+  if (simplified === '-1') return { sign: '-', text: basis }
+  if (simplified.startsWith('-')) {
+    const unsigned = coefficient.startsWith('-') ? coefficient.slice(1) : coefficient
+    return { sign: '-', text: `${unsigned} ${basis}` }
+  }
+
+  return { sign: '+', text: `${coefficient} ${basis}` }
+}
+
+function formatSymbolicVector(components, basis) {
+  const terms = components
+    .map((component, index) => formatSymbolicTerm(component, basis[index]))
+    .filter(Boolean)
+
+  if (!terms.length) return '0'
+
+  return terms
+    .map((term, index) => {
+      if (index === 0) return term.sign === '-' ? `-${term.text}` : term.text
+      return `${term.sign} ${term.text}`
+    })
+    .join(' ')
 }
 
 function normalizeSymbolicInput(input) {
@@ -372,6 +405,67 @@ function calculateGradient(systemId, scalarField) {
     getDerivative(field, 'y'),
     getDerivative(field, 'z'),
   ]
+}
+
+function calculateDivergence(systemId, vectorField) {
+  const [first, second, third] = vectorField.map(normalizeSymbolicInput)
+
+  if (systemId === 'cylindrical') {
+    return simplifyExpression(
+      `(1 / rho) * (${getDerivative(`rho * (${first})`, 'rho')}) + ` +
+        `(1 / rho) * (${getDerivative(second, 'phi')}) + (${getDerivative(third, 'z')})`,
+    )
+  }
+
+  if (systemId === 'spherical') {
+    return simplifyExpression(
+      `(1 / r^2) * (${getDerivative(`r^2 * (${first})`, 'r')}) + ` +
+        `(1 / (r * sin(theta))) * (${getDerivative(
+          `sin(theta) * (${second})`,
+          'theta',
+        )}) + ` +
+        `(1 / (r * sin(theta))) * (${getDerivative(third, 'phi')})`,
+    )
+  }
+
+  return simplifyExpression(
+    `(${getDerivative(first, 'x')}) + (${getDerivative(second, 'y')}) + (${getDerivative(
+      third,
+      'z',
+    )})`,
+  )
+}
+
+function calculateScalarLaplacian(systemId, scalarField) {
+  const field = normalizeSymbolicInput(scalarField)
+
+  if (systemId === 'cylindrical') {
+    return simplifyExpression(
+      `(1 / rho) * (${getDerivative(`rho * (${getDerivative(field, 'rho')})`, 'rho')}) + ` +
+        `(1 / rho^2) * (${getDerivative(getDerivative(field, 'phi'), 'phi')}) + ` +
+        `(${getDerivative(getDerivative(field, 'z'), 'z')})`,
+    )
+  }
+
+  if (systemId === 'spherical') {
+    return simplifyExpression(
+      `(1 / r^2) * (${getDerivative(`r^2 * (${getDerivative(field, 'r')})`, 'r')}) + ` +
+        `(1 / (r^2 * sin(theta))) * (${getDerivative(
+          `sin(theta) * (${getDerivative(field, 'theta')})`,
+          'theta',
+        )}) + ` +
+        `(1 / (r^2 * sin(theta)^2)) * (${getDerivative(
+          getDerivative(field, 'phi'),
+          'phi',
+        )})`,
+    )
+  }
+
+  return simplifyExpression(
+    `(${getDerivative(getDerivative(field, 'x'), 'x')}) + ` +
+      `(${getDerivative(getDerivative(field, 'y'), 'y')}) + ` +
+      `(${getDerivative(getDerivative(field, 'z'), 'z')})`,
+  )
 }
 
 function calculateCurl(systemId, vectorField) {
@@ -429,13 +523,17 @@ function calculateOperatorResults(systemId, operatorInput) {
   try {
     return {
       gradient: calculateGradient(systemId, operatorInput.scalarField),
+      divergence: calculateDivergence(systemId, operatorInput.vectorField),
       curl: calculateCurl(systemId, operatorInput.vectorField),
+      scalarLaplacian: calculateScalarLaplacian(systemId, operatorInput.scalarField),
       error: '',
     }
   } catch (error) {
     return {
       gradient: null,
+      divergence: null,
       curl: null,
+      scalarLaplacian: null,
       error: error.message || 'Check the field expressions.',
     }
   }
@@ -769,9 +867,7 @@ export default function VectorCalculator() {
   }
 
   function renderSymbolicVector(components, basis) {
-    return components
-      .map((component, index) => `(${component}) ${basis[index]}`)
-      .join(' + ')
+    return formatSymbolicVector(components, basis)
   }
 
   return (
@@ -814,7 +910,7 @@ export default function VectorCalculator() {
           ) : algebraResult.result.type === 'scalar' ? (
             <div className="vector-scalar-result">
               <output>
-                <span>Scalar</span>
+                <span>Answer</span>
                 <strong>{formatScalar(algebraResult.result.value)}</strong>
               </output>
             </div>
@@ -823,11 +919,11 @@ export default function VectorCalculator() {
           )}
         </section>
 
-        <section className="vector-operator-panel" aria-label="Gradient and curl">
+        <section className="vector-operator-panel" aria-label="Gradient, divergence, curl, and del squared">
           <div className="vector-operator-header">
             <div>
               <p className="eyebrow">Operators</p>
-              <h3>Grad and curl</h3>
+              <h3>Grad, div, curl, del^2</h3>
             </div>
             <div className="segmented-control" role="group" aria-label="Operator coordinate system">
               {operatorSystems.map((system) => (
@@ -845,7 +941,7 @@ export default function VectorCalculator() {
 
           <div className="vector-operator-grid">
             <label className="complex-field vector-scalar-field">
-              <span>Scalar field f({activeOperatorSystem.variables.join(', ')})</span>
+              <span>Scalar potential V({activeOperatorSystem.variables.join(', ')})</span>
               <input
                 type="text"
                 inputMode="text"
@@ -874,15 +970,25 @@ export default function VectorCalculator() {
           ) : (
             <div className="vector-symbolic-results">
               <output>
-                <span>grad f</span>
+                <span>grad V</span>
                 <strong>
                   {renderSymbolicVector(operatorResults.gradient, activeOperatorSystem.basis)}
                 </strong>
               </output>
 
               <output>
+                <span>div A</span>
+                <strong>{operatorResults.divergence}</strong>
+              </output>
+
+              <output>
                 <span>curl A</span>
                 <strong>{renderSymbolicVector(operatorResults.curl, activeOperatorSystem.basis)}</strong>
+              </output>
+
+              <output>
+                <span>del^2 V</span>
+                <strong>{operatorResults.scalarLaplacian}</strong>
               </output>
             </div>
           )}

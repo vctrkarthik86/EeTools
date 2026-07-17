@@ -16,9 +16,9 @@ export function cleanTinyValue(value) {
 export function formatScalar(value) {
   if (Math.abs(value) < 1e-12) return '0'
 
-  const rounded = Number(value.toFixed(8))
+  const rounded = Number(value.toFixed(3))
   return rounded.toLocaleString(undefined, {
-    maximumFractionDigits: 8,
+    maximumFractionDigits: 3,
   })
 }
 
@@ -27,7 +27,7 @@ export function formatInputNumber(value) {
 
   if (!Number.isFinite(cleanedValue)) return ''
 
-  return Number(cleanedValue.toFixed(8)).toString()
+  return Number(cleanedValue.toFixed(3)).toString()
 }
 
 export function formatAnswer(value) {
