@@ -58,7 +58,7 @@ function App() {
                 key={tool.id}
                 hidden={tool.id !== activeTool}
               >
-                <Calculator />
+                <Calculator description={tool.description} />
               </div>
             )
           })}
@@ -71,18 +71,18 @@ function App() {
     return (
       <section className="tool-panel info-page" aria-labelledby="about-title">
         <p className="eyebrow">About</p>
-        <h2 id="about-title">About EE Toolkit</h2>
+        <h2 id="about-title">About ECE Toolkit</h2>
         <div className="info-copy">
           <p>
-            EE Toolkit is a free collection of engineering calculators and learning tools
-            designed for electrical engineering students. It helps students learn and
+            ECE Toolkit is a free collection of engineering calculators and learning tools
+            designed for electrical and computer engineering students. It helps students learn and
             solve engineering problems more efficiently with tools such as matrix solvers
             and complex number calculators.
           </p>
           <p>
             The toolkit is continuously updated with new features based on student
             feedback, including planned support for AC circuit analysis, filter design,
-            and other electrical engineering workflows.
+            and other electrical computer engineering workflows.
           </p>
           <p>
             Contact:{' '}
@@ -101,9 +101,9 @@ function App() {
         <div className="info-copy">
           <p>Last updated: July 1, 2026</p>
           <p>
-            EE Toolkit runs in your browser and does not require an account. Calculator
+            ECE Toolkit runs in your browser and does not require an account. Calculator
             inputs and results are processed locally in the app and are not intentionally
-            collected, stored, or sold by EE Toolkit.
+            collected, stored, or sold by ECE Toolkit.
           </p>
           <p>
             If you contact the developer by email, your email address and message are used
@@ -127,7 +127,7 @@ function App() {
         <div className="info-copy">
           <p>Last updated: July 1, 2026</p>
           <p>
-            EE Toolkit is provided as a free educational resource. You may use it for
+            ECE Toolkit is provided as a free educational resource. You may use it for
             learning, study, and problem-solving support.
           </p>
           <ul className="info-list">
@@ -141,29 +141,6 @@ function App() {
           </p>
         </div>
       </section>
-    )
-  }
-
-  function renderSupportCallout() {
-    return (
-      <aside className="support-callout" aria-labelledby="support-title">
-        <div>
-          <h2 id="support-title">Enjoying EE Toolkit?</h2>
-          <p>
-            If these tools have helped you with your coursework or projects, you can
-            leave an optional tip to support continued development. Your support helps
-            fund new calculators, bug fixes, and educational features.
-          </p>
-        </div>
-        <a
-          className="tip-button"
-          href={supportDeveloperUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Support this project
-        </a>
-      </aside>
     )
   }
 
@@ -182,22 +159,14 @@ function App() {
     <main className="app-shell">
       <header className="app-header">
         <div>
-          <p className="eyebrow">Electrical Engineering Toolkit</p>
-          <h1>EE Toolkit</h1>
+          <p className="eyebrow">Electrical and Computer Engineering Toolkit</p>
+          <h1>ECE Toolkit</h1>
           <p className="author-credit">Created by Victor Karthik</p>
         </div>
         <div className="header-actions">
           <span className="status-pill">
             {activePage === 'tools' ? activeToolMeta.shortName : activePageMeta.label}
           </span>
-          <a
-            className="support-button"
-            href={supportDeveloperUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Support this project
-          </a>
         </div>
       </header>
 
@@ -216,7 +185,6 @@ function App() {
       </nav>
 
       {renderCurrentPage()}
-      {renderSupportCallout()}
 
       <footer className="app-footer">
         <span>

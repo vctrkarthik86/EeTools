@@ -478,7 +478,7 @@ function drawPlot({ ctx, compiledFunctions, selectedFunction, view, scaleMode, c
   ctx.textBaseline = 'alphabetic'
 }
 
-export default function FunctionPlotter() {
+export default function FunctionPlotter({ description }) {
   const [functions, setFunctions] = useState(() => [
     createFunction('fn-1', EXAMPLE_EXPRESSIONS[0], COLORS[0], true),
     createFunction('fn-2', EXAMPLE_EXPRESSIONS[1], COLORS[1], true),
@@ -684,6 +684,7 @@ export default function FunctionPlotter() {
         <div>
           <p className="eyebrow">Graphing</p>
           <h2 id="plotter-title">Function plotter</h2>
+          <p className="tool-description">{description}</p>
         </div>
         <button type="button" onClick={resetView}>
           Reset view

@@ -169,7 +169,7 @@ function getRangeText(range, baseId) {
   return `${formatValueForBase(range.min, baseId)} to ${formatValueForBase(range.max, baseId)}`
 }
 
-export default function NumberRepresentationConverter() {
+export default function NumberRepresentationConverter({ description }) {
   const [inputBase, setInputBase] = useState('decimal')
   const [bitWidth, setBitWidth] = useState(8)
   const [representationFormat, setRepresentationFormat] = useState('twos-complement')
@@ -226,6 +226,7 @@ export default function NumberRepresentationConverter() {
         <div>
           <p className="eyebrow">Digital systems</p>
           <h2 id="representation-title">Number representation converter</h2>
+          <p className="tool-description">{description}</p>
         </div>
       </div>
 

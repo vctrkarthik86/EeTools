@@ -189,7 +189,7 @@ function calculateComplexOperation(first, second, operation) {
   }
 }
 
-export default function ComplexNumbers() {
+export default function ComplexNumbers({ description }) {
   const [angleUnit, setAngleUnit] = useState('deg')
   const [complexNumbers, setComplexNumbers] = useState(() => createInitialComplexNumbers())
   const [complexOperation, setComplexOperation] = useState('add')
@@ -389,6 +389,7 @@ export default function ComplexNumbers() {
         <div>
           <p className="eyebrow">Complex arithmetic</p>
           <h2 id="complex-title">Complex numbers</h2>
+          <p className="tool-description">{description}</p>
         </div>
         <div className="unit-control">
           <span>Angle unit</span>

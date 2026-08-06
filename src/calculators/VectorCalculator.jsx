@@ -606,7 +606,7 @@ function getOperationResult(operation, first, second) {
   return { type: 'scalar', value: getMagnitude(second) }
 }
 
-export default function VectorCalculator() {
+export default function VectorCalculator({ description }) {
   const [angleUnit, setAngleUnit] = useState('deg')
   const [vectors, setVectors] = useState(() => createInitialVectors())
   const [operation, setOperation] = useState('add')
@@ -974,6 +974,7 @@ export default function VectorCalculator() {
         <div>
           <p className="eyebrow">Electromagnetics</p>
           <h2 id="vector-title">Vector calculator</h2>
+          <p className="tool-description">{description}</p>
         </div>
       </div>
 

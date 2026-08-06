@@ -174,7 +174,7 @@ function createError(message) {
   }
 }
 
-export default function BitManipulationPlayground() {
+export default function BitManipulationPlayground({ description }) {
   const [mode, setMode] = useState('bit')
   const [width, setWidth] = useState(8)
   const [registerName, setRegisterName] = useState('PORTA')
@@ -434,6 +434,7 @@ export default function BitManipulationPlayground() {
         <div>
           <p className="eyebrow">Digital logic</p>
           <h2 id="bit-title">Bit manipulation playground</h2>
+          <p className="tool-description">{description}</p>
         </div>
         <label className="size-control">
           <span>Register width</span>

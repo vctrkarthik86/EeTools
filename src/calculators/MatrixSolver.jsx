@@ -25,7 +25,7 @@ const complexExampleA = [
 
 const complexExampleB = ['1', '2+j']
 
-export default function MatrixSolver() {
+export default function MatrixSolver({ description }) {
   const [size, setSize] = useState(3)
   const [matrixA, setMatrixA] = useState(() => createMatrix(3))
   const [vectorB, setVectorB] = useState(() => createVector(3))
@@ -123,6 +123,7 @@ export default function MatrixSolver() {
         <div>
           <p className="eyebrow">Linear systems</p>
           <h2 id="matrix-title">Matrix solver</h2>
+          <p className="tool-description">{description}</p>
         </div>
         <label className="size-control">
           <span>Size of A</span>
