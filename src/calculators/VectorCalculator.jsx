@@ -20,9 +20,24 @@ const vectorLabels = {
 }
 
 const coordinateModes = [
-  { id: 'rectangular', label: 'Rect', name: 'Rectangular' },
-  { id: 'cylindrical', label: 'Cyl', name: 'Cylindrical' },
-  { id: 'spherical', label: 'Sph', name: 'Spherical' },
+  {
+    id: 'rectangular',
+    label: 'Rect',
+    name: 'Rectangular',
+    basis: ['a_x', 'a_y', 'a_z'],
+  },
+  {
+    id: 'cylindrical',
+    label: 'Cyl',
+    name: 'Cylindrical',
+    basis: ['a_ρ', 'a_φ', 'a_z'],
+  },
+  {
+    id: 'spherical',
+    label: 'Sph',
+    name: 'Spherical',
+    basis: ['a_r', 'a_θ', 'a_φ'],
+  },
 ]
 
 const vectorOperations = [
@@ -30,6 +45,7 @@ const vectorOperations = [
   { id: 'subtract', label: 'A-B', name: 'Subtract', resultLabel: 'A - B' },
   { id: 'dot', label: 'Dot', name: 'Dot product', resultLabel: 'A dot B' },
   { id: 'cross', label: 'Cross', name: 'Cross product', resultLabel: 'A cross B' },
+  { id: 'angle', label: 'θ', name: 'Angle between A and B', resultLabel: 'θ between A and B' },
   { id: 'magnitude-first', label: '|A|', name: 'Magnitude of A', resultLabel: '|A|' },
   { id: 'magnitude-second', label: '|B|', name: 'Magnitude of B', resultLabel: '|B|' },
 ]
@@ -40,7 +56,7 @@ const operatorSystems = [
     label: 'Rect',
     name: 'Rectangular',
     variables: ['x', 'y', 'z'],
-    fieldLabels: ['A_x', 'A_y', 'A_z'],
+    fieldLabels: ['a_x', 'a_y', 'a_z'],
     basis: ['a_x', 'a_y', 'a_z'],
     example: {
       scalarField: 'x*y + z^2',
@@ -52,7 +68,7 @@ const operatorSystems = [
     label: 'Cyl',
     name: 'Cylindrical',
     variables: ['ρ', 'φ', 'z'],
-    fieldLabels: ['A_ρ', 'A_φ', 'A_z'],
+    fieldLabels: ['a_ρ', 'a_φ', 'a_z'],
     basis: ['a_ρ', 'a_φ', 'a_z'],
     example: {
       scalarField: 'ρ^2 * z',
@@ -64,7 +80,7 @@ const operatorSystems = [
     label: 'Sph',
     name: 'Spherical',
     variables: ['r', 'θ', 'φ'],
-    fieldLabels: ['A_r', 'A_θ', 'A_φ'],
+    fieldLabels: ['a_r', 'a_θ', 'a_φ'],
     basis: ['a_r', 'a_θ', 'a_φ'],
     example: {
       scalarField: 'r * cos(θ)',
@@ -283,6 +299,15 @@ function crossProduct(first, second) {
 
 function getMagnitude(vector) {
   return cleanTinyValue(Math.hypot(vector.x, vector.y, vector.z))
+}
+
+function getAngleBetween(first, second) {
+  const magnitudeProduct = getMagnitude(first) * getMagnitude(second)
+
+  if (magnitudeProduct === 0) return null
+
+  const cosine = dotProduct(first, second) / magnitudeProduct
+  return Math.acos(Math.max(-1, Math.min(1, cosine)))
 }
 
 function StaticCoordinatePlot({ vector, mode, angleUnit }) {
@@ -670,27 +695,27 @@ function getVectorViews(vector, angleUnit) {
       id: 'rectangular',
       label: 'Rectangular',
       values: [
-        { label: 'x', value: vector.x },
-        { label: 'y', value: vector.y },
-        { label: 'z', value: vector.z },
+        { label: 'a_x', value: vector.x },
+        { label: 'a_y', value: vector.y },
+        { label: 'a_z', value: vector.z },
       ],
     },
     {
       id: 'cylindrical',
       label: 'Cylindrical',
       values: [
-        { label: 'ρ', value: cylindrical.rho },
-        { label: 'φ', value: getAngleInUnit(cylindrical.phi, angleUnit), unit: angleUnit },
-        { label: 'z', value: cylindrical.z },
+        { label: 'a_ρ', value: cylindrical.rho },
+        { label: 'a_φ', value: getAngleInUnit(cylindrical.phi, angleUnit), unit: angleUnit },
+        { label: 'a_z', value: cylindrical.z },
       ],
     },
     {
       id: 'spherical',
       label: 'Spherical',
       values: [
-        { label: 'r', value: spherical.r },
-        { label: 'θ', value: getAngleInUnit(spherical.theta, angleUnit), unit: angleUnit },
-        { label: 'φ', value: getAngleInUnit(spherical.phi, angleUnit), unit: angleUnit },
+        { label: 'a_r', value: spherical.r },
+        { label: 'a_θ', value: getAngleInUnit(spherical.theta, angleUnit), unit: angleUnit },
+        { label: 'a_φ', value: getAngleInUnit(spherical.phi, angleUnit), unit: angleUnit },
       ],
     },
   ]
@@ -788,53 +813,6 @@ function calculateGradient(systemId, scalarField) {
     getDerivative(field, 'x'),
     getDerivative(field, 'y'),
     getDerivative(field, 'z'),
-  ]
-}
-
-function calculateVectorGradient(systemId, vectorField) {
-  const [first, second, third] = vectorField.map(normalizeSymbolicInput)
-
-  if (systemId === 'cylindrical') {
-    return [
-      [getDerivative(first, 'rho'), getDerivative(second, 'rho'), getDerivative(third, 'rho')],
-      [
-        simplifyExpression(`(1 / rho) * ((${getDerivative(first, 'phi')}) - (${second}))`),
-        simplifyExpression(`(1 / rho) * ((${getDerivative(second, 'phi')}) + (${first}))`),
-        simplifyExpression(`(1 / rho) * (${getDerivative(third, 'phi')})`),
-      ],
-      [getDerivative(first, 'z'), getDerivative(second, 'z'), getDerivative(third, 'z')],
-    ]
-  }
-
-  if (systemId === 'spherical') {
-    return [
-      [getDerivative(first, 'r'), getDerivative(second, 'r'), getDerivative(third, 'r')],
-      [
-        simplifyExpression(`(1 / r) * ((${getDerivative(first, 'theta')}) - (${second}))`),
-        simplifyExpression(`(1 / r) * ((${getDerivative(second, 'theta')}) + (${first}))`),
-        simplifyExpression(`(1 / r) * (${getDerivative(third, 'theta')})`),
-      ],
-      [
-        simplifyExpression(
-          `(1 / (r * sin(theta))) * ((${getDerivative(first, 'phi')}) - ` +
-            `(${third}) * sin(theta))`,
-        ),
-        simplifyExpression(
-          `(1 / (r * sin(theta))) * ((${getDerivative(second, 'phi')}) - ` +
-            `(${third}) * cos(theta))`,
-        ),
-        simplifyExpression(
-          `(1 / (r * sin(theta))) * ((${getDerivative(third, 'phi')}) + ` +
-            `(${first}) * sin(theta) + (${second}) * cos(theta))`,
-        ),
-      ],
-    ]
-  }
-
-  return [
-    [getDerivative(first, 'x'), getDerivative(second, 'x'), getDerivative(third, 'x')],
-    [getDerivative(first, 'y'), getDerivative(second, 'y'), getDerivative(third, 'y')],
-    [getDerivative(first, 'z'), getDerivative(second, 'z'), getDerivative(third, 'z')],
   ]
 }
 
@@ -950,33 +928,66 @@ function calculateCurl(systemId, vectorField) {
   ]
 }
 
-function calculateOperatorResults(systemId, operatorInput) {
+function calculateVectorLaplacian(systemId, vectorField) {
+  const gradientOfDivergence = calculateGradient(
+    systemId,
+    calculateDivergence(systemId, vectorField),
+  )
+  const curlOfCurl = calculateCurl(systemId, calculateCurl(systemId, vectorField))
+
+  return gradientOfDivergence.map((component, index) =>
+    simplifyExpression(`(${component}) - (${curlOfCurl[index]})`),
+  )
+}
+
+function calculateScalarOperatorResults(systemId, scalarField) {
   try {
     return {
-      gradient: calculateGradient(systemId, operatorInput.scalarField),
-      vectorGradient: calculateVectorGradient(systemId, operatorInput.vectorField),
-      divergence: calculateDivergence(systemId, operatorInput.vectorField),
-      curl: calculateCurl(systemId, operatorInput.vectorField),
-      scalarLaplacian: calculateScalarLaplacian(systemId, operatorInput.scalarField),
+      gradient: calculateGradient(systemId, scalarField),
+      laplacian: calculateScalarLaplacian(systemId, scalarField),
       error: '',
     }
   } catch (error) {
     return {
       gradient: null,
-      vectorGradient: null,
-      divergence: null,
-      curl: null,
-      scalarLaplacian: null,
-      error: error.message || 'Check the field expressions.',
+      laplacian: null,
+      error: error.message || 'Check the scalar-field expression.',
     }
   }
 }
 
-function getOperationResult(operation, first, second) {
+function calculateVectorOperatorResults(systemId, vectorField) {
+  try {
+    return {
+      divergence: calculateDivergence(systemId, vectorField),
+      curl: calculateCurl(systemId, vectorField),
+      laplacian: calculateVectorLaplacian(systemId, vectorField),
+      error: '',
+    }
+  } catch (error) {
+    return {
+      divergence: null,
+      curl: null,
+      laplacian: null,
+      error: error.message || 'Check the vector-field expressions.',
+    }
+  }
+}
+
+function getOperationResult(operation, first, second, angleUnit) {
   if (operation === 'add') return { type: 'vector', value: addVectors(first, second) }
   if (operation === 'subtract') return { type: 'vector', value: subtractVectors(first, second) }
   if (operation === 'dot') return { type: 'scalar', value: dotProduct(first, second) }
   if (operation === 'cross') return { type: 'vector', value: crossProduct(first, second) }
+  if (operation === 'angle') {
+    const radians = getAngleBetween(first, second)
+
+    return {
+      type: 'angle',
+      value: radians === null ? null : getAngleInUnit(radians, angleUnit),
+      unit: angleUnit,
+    }
+  }
   if (operation === 'magnitude-first') return { type: 'scalar', value: getMagnitude(first) }
 
   return { type: 'scalar', value: getMagnitude(second) }
@@ -1010,9 +1021,19 @@ export default function VectorCalculator({ description }) {
   const activeOperatorSystem =
     operatorSystems.find((system) => system.id === operatorSystem) ?? operatorSystems[0]
   const activeOperatorInput = operatorInputs[activeOperatorSystem.id]
-  const operatorResults = useMemo(
-    () => calculateOperatorResults(activeOperatorSystem.id, activeOperatorInput),
-    [activeOperatorInput, activeOperatorSystem.id],
+  const scalarOperatorResults = useMemo(
+    () => calculateScalarOperatorResults(
+      activeOperatorSystem.id,
+      activeOperatorInput.scalarField,
+    ),
+    [activeOperatorInput.scalarField, activeOperatorSystem.id],
+  )
+  const vectorOperatorResults = useMemo(
+    () => calculateVectorOperatorResults(
+      activeOperatorSystem.id,
+      activeOperatorInput.vectorField,
+    ),
+    [activeOperatorInput.vectorField, activeOperatorSystem.id],
   )
 
   const algebraResult = useMemo(() => {
@@ -1023,11 +1044,22 @@ export default function VectorCalculator({ description }) {
       }
     }
 
-    return {
-      result: getOperationResult(operation, parsedVectors.first, parsedVectors.second),
-      error: '',
+    const result = getOperationResult(
+      operation,
+      parsedVectors.first,
+      parsedVectors.second,
+      angleUnit,
+    )
+
+    if (result.type === 'angle' && result.value === null) {
+      return {
+        result: null,
+        error: 'The angle is undefined when either vector has zero magnitude.',
+      }
     }
-  }, [operation, parsedVectors])
+
+    return { result, error: '' }
+  }, [angleUnit, operation, parsedVectors])
 
   function updateAngleUnit(nextUnit) {
     if (nextUnit === angleUnit) return
@@ -1155,6 +1187,7 @@ export default function VectorCalculator({ description }) {
   function renderVectorFields(vectorId) {
     const vector = vectors[vectorId]
     const label = vectorLabels[vectorId]
+    const activeMode = coordinateModes.find((mode) => mode.id === vector.mode)
     const parsedVector = parsedVectors[vectorId]
     const vectorViews =
       parsedVector ? getVectorViews(parsedVector, angleUnit) : []
@@ -1165,6 +1198,9 @@ export default function VectorCalculator({ description }) {
           <div>
             <p className="eyebrow">{label.name}</p>
             <h3>{label.symbol}</h3>
+            <p className="coordinate-helper">
+              Unit-vector basis: {activeMode.basis.join(', ')}
+            </p>
           </div>
           <div className="vector-header-actions">
             {renderCoordinateControl(vectorId, vector)}
@@ -1174,7 +1210,7 @@ export default function VectorCalculator({ description }) {
         {vector.mode === 'rectangular' && (
           <div className="complex-field-grid vector-field-grid">
             <label className="complex-field">
-              <span>{label.symbol}_x</span>
+              <span>a_x</span>
               <input
                 type="number"
                 inputMode="decimal"
@@ -1184,7 +1220,7 @@ export default function VectorCalculator({ description }) {
               />
             </label>
             <label className="complex-field">
-              <span>{label.symbol}_y</span>
+              <span>a_y</span>
               <input
                 type="number"
                 inputMode="decimal"
@@ -1194,7 +1230,7 @@ export default function VectorCalculator({ description }) {
               />
             </label>
             <label className="complex-field">
-              <span>{label.symbol}_z</span>
+              <span>a_z</span>
               <input
                 type="number"
                 inputMode="decimal"
@@ -1209,7 +1245,7 @@ export default function VectorCalculator({ description }) {
         {vector.mode === 'cylindrical' && (
           <div className="complex-field-grid vector-field-grid">
             <label className="complex-field">
-              <span>{label.symbol}_ρ</span>
+              <span>a_ρ</span>
               <input
                 type="number"
                 inputMode="decimal"
@@ -1219,7 +1255,7 @@ export default function VectorCalculator({ description }) {
               />
             </label>
             <label className="complex-field">
-              <span>{label.symbol}_φ ({angleUnit})</span>
+              <span>a_φ ({angleUnit})</span>
               <input
                 type="number"
                 inputMode="decimal"
@@ -1229,7 +1265,7 @@ export default function VectorCalculator({ description }) {
               />
             </label>
             <label className="complex-field">
-              <span>{label.symbol}_z</span>
+              <span>a_z</span>
               <input
                 type="number"
                 inputMode="decimal"
@@ -1244,7 +1280,7 @@ export default function VectorCalculator({ description }) {
         {vector.mode === 'spherical' && (
           <div className="complex-field-grid vector-field-grid">
             <label className="complex-field">
-              <span>{label.symbol}_r</span>
+              <span>a_r</span>
               <input
                 type="number"
                 inputMode="decimal"
@@ -1254,7 +1290,7 @@ export default function VectorCalculator({ description }) {
               />
             </label>
             <label className="complex-field">
-              <span>{label.symbol}_θ ({angleUnit})</span>
+              <span>a_θ ({angleUnit})</span>
               <input
                 type="number"
                 inputMode="decimal"
@@ -1264,7 +1300,7 @@ export default function VectorCalculator({ description }) {
               />
             </label>
             <label className="complex-field">
-              <span>{label.symbol}_φ ({angleUnit})</span>
+              <span>a_φ ({angleUnit})</span>
               <input
                 type="number"
                 inputMode="decimal"
@@ -1308,19 +1344,19 @@ export default function VectorCalculator({ description }) {
   function renderCoordinateSystem() {
     const fieldSets = {
       rectangular: [
-        { field: 'x', label: 'V_x', placeholder: '3' },
-        { field: 'y', label: 'V_y', placeholder: '2' },
-        { field: 'z', label: 'V_z', placeholder: '4' },
+        { field: 'x', label: 'a_x', placeholder: '3' },
+        { field: 'y', label: 'a_y', placeholder: '2' },
+        { field: 'z', label: 'a_z', placeholder: '4' },
       ],
       cylindrical: [
-        { field: 'cylRho', label: 'V_ρ', placeholder: '3.6' },
-        { field: 'cylPhi', label: `V_φ (${angleUnit})`, placeholder: '34' },
-        { field: 'cylZ', label: 'V_z', placeholder: '4' },
+        { field: 'cylRho', label: 'a_ρ', placeholder: '3.6' },
+        { field: 'cylPhi', label: `a_φ (${angleUnit})`, placeholder: '34' },
+        { field: 'cylZ', label: 'a_z', placeholder: '4' },
       ],
       spherical: [
-        { field: 'sphR', label: 'V_r', placeholder: '5.4' },
-        { field: 'sphTheta', label: `V_θ (${angleUnit})`, placeholder: '42' },
-        { field: 'sphPhi', label: `V_φ (${angleUnit})`, placeholder: '34' },
+        { field: 'sphR', label: 'a_r', placeholder: '5.4' },
+        { field: 'sphTheta', label: `a_θ (${angleUnit})`, placeholder: '42' },
+        { field: 'sphPhi', label: `a_φ (${angleUnit})`, placeholder: '34' },
       ],
     }
     const activeFields = fieldSets[coordinateVector.mode]
@@ -1444,47 +1480,6 @@ export default function VectorCalculator({ description }) {
     )
   }
 
-  function renderSymbolicMatrix(matrix, rowLabels, columnLabels) {
-    const cells = [
-      <div className="vector-tensor-cell vector-tensor-header" key="corner" aria-hidden="true" />,
-      ...columnLabels.map((label) => (
-        <div className="vector-tensor-cell vector-tensor-header" role="columnheader" key={`column-${label}`}>
-          {label}
-        </div>
-      )),
-    ]
-
-    matrix.forEach((row, rowIndex) => {
-      cells.push(
-        <div
-          className="vector-tensor-cell vector-tensor-header"
-          role="rowheader"
-          key={`row-${rowLabels[rowIndex]}`}
-        >
-          {rowLabels[rowIndex]}
-        </div>,
-      )
-
-      row.forEach((entry, columnIndex) => {
-        cells.push(
-          <div
-            className="vector-tensor-cell vector-tensor-entry"
-            role="cell"
-            key={`${rowIndex}-${columnIndex}`}
-          >
-            {formatSymbolicExpression(entry)}
-          </div>,
-        )
-      })
-    })
-
-    return (
-      <div className="vector-tensor-table" role="table" aria-label="Gradient of A">
-        {cells}
-      </div>
-    )
-  }
-
   function renderSymbolicVector(components, basis) {
     return formatSymbolicVector(components, basis)
   }
@@ -1529,11 +1524,14 @@ export default function VectorCalculator({ description }) {
 
           {algebraResult.error ? (
             <p className="message error">{algebraResult.error}</p>
-          ) : algebraResult.result.type === 'scalar' ? (
+          ) : algebraResult.result.type === 'scalar' || algebraResult.result.type === 'angle' ? (
             <div className="vector-scalar-result">
               <output>
                 <span>Answer</span>
-                <strong>{formatScalar(algebraResult.result.value)}</strong>
+                <strong>
+                  {formatScalar(algebraResult.result.value)}
+                  {algebraResult.result.type === 'angle' ? ` ${algebraResult.result.unit}` : ''}
+                </strong>
               </output>
             </div>
           ) : (
@@ -1541,11 +1539,11 @@ export default function VectorCalculator({ description }) {
           )}
         </section>
 
-        <section className="vector-operator-panel" aria-label="Gradient, divergence, curl, and del squared">
+        <section className="vector-operator-panel" aria-label="Del operators">
           <div className="vector-operator-header">
             <div>
-              <p className="eyebrow">Operators</p>
-              <h3>Grad, div, curl, del^2</h3>
+              <p className="eyebrow">Field calculus</p>
+              <h3>Del operators ∇</h3>
             </div>
             <div className="segmented-control" role="group" aria-label="Operator coordinate system">
               {operatorSystems.map((system) => (
@@ -1561,68 +1559,102 @@ export default function VectorCalculator({ description }) {
             </div>
           </div>
 
-          <div className="vector-operator-grid">
-            <label className="complex-field vector-scalar-field">
-              <span>Scalar potential V({activeOperatorSystem.variables.join(', ')})</span>
-              <input
-                type="text"
-                inputMode="text"
-                value={activeOperatorInput.scalarField}
-                spellCheck="false"
-                onChange={(event) => updateOperatorScalar(event.target.value)}
-              />
-            </label>
+          <div className="del-operator-sections">
+            <section className="del-operator-section" aria-labelledby="scalar-del-title">
+              <div className="del-operator-heading">
+                <p className="eyebrow">Scalar field</p>
+                <h4 id="scalar-del-title">
+                  V({activeOperatorSystem.variables.join(', ')})
+                </h4>
+                <p className="coordinate-helper">Find the gradient and scalar Laplacian.</p>
+              </div>
 
-            {activeOperatorSystem.fieldLabels.map((label, index) => (
-              <label className="complex-field" key={label}>
-                <span>{label}</span>
+              <label className="complex-field vector-scalar-field">
+                <span>Scalar field V</span>
                 <input
                   type="text"
                   inputMode="text"
-                  value={activeOperatorInput.vectorField[index]}
+                  value={activeOperatorInput.scalarField}
                   spellCheck="false"
-                  onChange={(event) => updateOperatorVectorField(index, event.target.value)}
+                  onChange={(event) => updateOperatorScalar(event.target.value)}
                 />
               </label>
-            ))}
+
+              {scalarOperatorResults.error ? (
+                <p className="message error">{scalarOperatorResults.error}</p>
+              ) : (
+                <div className="vector-symbolic-results scalar-del-results">
+                  <output>
+                    <span>Gradient ∇V</span>
+                    <strong>
+                      {renderSymbolicVector(
+                        scalarOperatorResults.gradient,
+                        activeOperatorSystem.basis,
+                      )}
+                    </strong>
+                  </output>
+                  <output>
+                    <span>Scalar Laplacian ∇²V</span>
+                    <strong>{formatSymbolicExpression(scalarOperatorResults.laplacian)}</strong>
+                  </output>
+                </div>
+              )}
+            </section>
+
+            <section className="del-operator-section" aria-labelledby="vector-del-title">
+              <div className="del-operator-heading">
+                <p className="eyebrow">Vector field</p>
+                <h4 id="vector-del-title">
+                  A({activeOperatorSystem.variables.join(', ')})
+                </h4>
+                <p className="coordinate-helper">Find the divergence, curl, and vector Laplacian.</p>
+              </div>
+
+              <div className="vector-operator-grid">
+                {activeOperatorSystem.fieldLabels.map((label, index) => (
+                  <label className="complex-field" key={label}>
+                    <span>{label}</span>
+                    <input
+                      type="text"
+                      inputMode="text"
+                      value={activeOperatorInput.vectorField[index]}
+                      spellCheck="false"
+                      onChange={(event) => updateOperatorVectorField(index, event.target.value)}
+                    />
+                  </label>
+                ))}
+              </div>
+
+              {vectorOperatorResults.error ? (
+                <p className="message error">{vectorOperatorResults.error}</p>
+              ) : (
+                <div className="vector-symbolic-results vector-del-results">
+                  <output>
+                    <span>Divergence ∇·A</span>
+                    <strong>{formatSymbolicExpression(vectorOperatorResults.divergence)}</strong>
+                  </output>
+                  <output>
+                    <span>Curl ∇×A</span>
+                    <strong>
+                      {renderSymbolicVector(
+                        vectorOperatorResults.curl,
+                        activeOperatorSystem.basis,
+                      )}
+                    </strong>
+                  </output>
+                  <output>
+                    <span>Vector Laplacian ∇²A</span>
+                    <strong>
+                      {renderSymbolicVector(
+                        vectorOperatorResults.laplacian,
+                        activeOperatorSystem.basis,
+                      )}
+                    </strong>
+                  </output>
+                </div>
+              )}
+            </section>
           </div>
-
-          {operatorResults.error ? (
-            <p className="message error">{operatorResults.error}</p>
-          ) : (
-            <div className="vector-symbolic-results">
-              <output>
-                <span>grad V</span>
-                <strong>
-                  {renderSymbolicVector(operatorResults.gradient, activeOperatorSystem.basis)}
-                </strong>
-              </output>
-
-              <output className="vector-tensor-output">
-                <span>grad A</span>
-                {renderSymbolicMatrix(
-                  operatorResults.vectorGradient,
-                  activeOperatorSystem.basis,
-                  activeOperatorSystem.fieldLabels,
-                )}
-              </output>
-
-              <output>
-                <span>div A</span>
-                <strong>{formatSymbolicExpression(operatorResults.divergence)}</strong>
-              </output>
-
-              <output>
-                <span>curl A</span>
-                <strong>{renderSymbolicVector(operatorResults.curl, activeOperatorSystem.basis)}</strong>
-              </output>
-
-              <output>
-                <span>del^2 V</span>
-                <strong>{formatSymbolicExpression(operatorResults.scalarLaplacian)}</strong>
-              </output>
-            </div>
-          )}
         </section>
       </div>
 
