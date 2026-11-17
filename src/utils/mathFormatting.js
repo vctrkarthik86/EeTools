@@ -13,12 +13,12 @@ export function cleanTinyValue(value) {
   return Math.abs(value) < 1e-12 ? 0 : value
 }
 
-export function formatScalar(value) {
+export function formatScalar(value, decimalPlaces = 3) {
   if (Math.abs(value) < 1e-12) return '0'
 
-  const rounded = Number(value.toFixed(3))
+  const rounded = Number(value.toFixed(decimalPlaces))
   return rounded.toLocaleString(undefined, {
-    maximumFractionDigits: 3,
+    maximumFractionDigits: decimalPlaces,
   })
 }
 
@@ -30,17 +30,17 @@ export function formatInputNumber(value) {
   return Number(cleanedValue.toFixed(3)).toString()
 }
 
-export function formatAnswer(value) {
+export function formatAnswer(value, decimalPlaces = 3) {
   const resolvedValue = normalizeComplex(value)
   const real = cleanTinyValue(resolvedValue.re)
   const imaginary = cleanTinyValue(resolvedValue.im)
 
   if (!Number.isFinite(real) || !Number.isFinite(imaginary)) return 'Not finite'
-  if (imaginary === 0) return formatScalar(real)
-  if (real === 0) return `${formatScalar(imaginary)}j`
+  if (imaginary === 0) return formatScalar(real, decimalPlaces)
+  if (real === 0) return `${formatScalar(imaginary, decimalPlaces)}j`
 
   const sign = imaginary < 0 ? '-' : '+'
-  return `${formatScalar(real)} ${sign} ${formatScalar(Math.abs(imaginary))}j`
+  return `${formatScalar(real, decimalPlaces)} ${sign} ${formatScalar(Math.abs(imaginary), decimalPlaces)}j`
 }
 
 export function parseComplexValue(value) {

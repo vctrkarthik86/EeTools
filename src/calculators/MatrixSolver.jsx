@@ -92,8 +92,9 @@ export default function MatrixSolver({ description }) {
   }
 
   function solveSystem() {
-    const parsedA = matrixA.map((row) => row.map(parseComplexValue))
-    const parsedB = vectorB.map(parseComplexValue)
+    const parseValueOrZero = (value) => parseComplexValue(value.trim() === '' ? '0' : value)
+    const parsedA = matrixA.map((row) => row.map(parseValueOrZero))
+    const parsedB = vectorB.map(parseValueOrZero)
     const hasMissingValue =
       parsedA.some((row) => row.some((value) => value === null)) ||
       parsedB.some((value) => value === null)
@@ -213,7 +214,7 @@ export default function MatrixSolver({ description }) {
             {solution.map((value, index) => (
               <output key={`x-${index}`}>
                 <span>x{index + 1}</span>
-                <strong>{formatAnswer(value)}</strong>
+                <strong>{formatAnswer(value, 4)}</strong>
               </output>
             ))}
           </div>
